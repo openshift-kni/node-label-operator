@@ -1,0 +1,49 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: node-label-operator-kni.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: Labels is the Schema for the labels API
+      displayName: Labels
+      kind: Labels
+      name: labels.node-labels.openshift.io
+      version: v1beta1
+  description: Operator for labeling nodes based on their names
+  displayName: Node Label Operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - node
+  - labels
+  links:
+  - name: Node Label Operator Kni
+    url: https://node-label-operator-kni.domain
+  maintainers:
+  - email: kni-lifecycle-team@redhat.com'
+    name: '''KNI Lifecycle Team'
+  maturity: alpha
+  provider:
+    name: Red Hat
+    url: https://www.redhat.com
+  version: 0.0.0
