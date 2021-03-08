@@ -240,6 +240,7 @@ gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 gopkg.in/yaml.v3
 # k8s.io/api v0.19.2
+## explicit
 k8s.io/api/admission/v1
 k8s.io/api/admission/v1beta1
 k8s.io/api/admissionregistration/v1
@@ -429,6 +430,7 @@ k8s.io/klog/v2
 # k8s.io/kube-openapi v0.0.0-20200805222855-6aeccd4b50c6
 k8s.io/kube-openapi/pkg/util/proto
 # k8s.io/utils v0.0.0-20200912215256-4140de9c8800
+## explicit
 k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/pointer
