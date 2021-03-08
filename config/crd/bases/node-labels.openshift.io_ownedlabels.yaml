@@ -19,7 +19,9 @@ spec:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: OwnedLabels is the Schema for the ownedlabels API
+        description: OwnedLabels is the Schema for the ownedlabels API They define
+          which node labels are owned by this operator and can be removed in case
+          no label rule matches
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -36,9 +38,18 @@ spec:
           spec:
             description: OwnedLabelsSpec defines the desired state of OwnedLabels
             properties:
-              foo:
-                description: Foo is an example field of OwnedLabels. Edit OwnedLabels_types.go
-                  to remove/update
+              domain:
+                description: Domain defines the label domain which is owned by this
+                  operator If a node label - matches this domain AND - matches the
+                  namePattern if given AND - no label rule matches then the label
+                  will be removed
+                type: string
+              namePattern:
+                description: NamePattern defines the label name pattern which is owned
+                  by this operator If a node label - matches this name pattern AND
+                  - matches the domain if given AND - no label rule matches then the
+                  label will be removed String start and end anchors (^/$) will be
+                  added automatically
                 type: string
             type: object
           status:

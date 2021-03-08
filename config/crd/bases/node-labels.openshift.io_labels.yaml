@@ -36,10 +36,31 @@ spec:
           spec:
             description: LabelsSpec defines the desired state of Labels
             properties:
-              foo:
-                description: Foo is an example field of Labels. Edit Labels_types.go
-                  to remove/update
-                type: string
+              rules:
+                description: Rules defines a list of rules
+                items:
+                  properties:
+                    labels:
+                      description: Label defines the labels which should be set if
+                        one of the node name patterns matches Format of label must
+                        be domain/name=value
+                      items:
+                        type: string
+                      type: array
+                    nodeNamePatterns:
+                      description: NodeNames defines a list of node name patterns
+                        for which the given labels should be set. String start and
+                        end anchors (^/$) will be added automatically
+                      items:
+                        type: string
+                      type: array
+                  required:
+                  - labels
+                  - nodeNamePatterns
+                  type: object
+                type: array
+            required:
+            - rules
             type: object
           status:
             description: LabelsStatus defines the observed state of Labels
