@@ -1,0 +1,20 @@
+# permissions for end users to view ownedlabels.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ownedlabels-viewer-role
+rules:
+- apiGroups:
+  - node-labels.openshift.io
+  resources:
+  - ownedlabels
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - node-labels.openshift.io
+  resources:
+  - ownedlabels/status
+  verbs:
+  - get

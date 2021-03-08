@@ -1,0 +1,7 @@
+apiVersion: node-labels.openshift.io/v1beta1
+kind: OwnedLabels
+metadata:
+  name: ownedlabels-sample
+spec:
+  # Add fields here
+  foo: bar

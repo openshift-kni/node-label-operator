@@ -1,0 +1,24 @@
+# permissions for end users to edit labels.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: labels-editor-role
+rules:
+- apiGroups:
+  - node-labels.openshift.io
+  resources:
+  - labels
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - node-labels.openshift.io
+  resources:
+  - labels/status
+  verbs:
+  - get

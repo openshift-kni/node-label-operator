@@ -1,0 +1,13 @@
+domain: openshift.io
+layout: go.kubebuilder.io/v3
+projectName: node-label-operator-kni
+repo: github.com/openshift-kni/node-label-operator
+resources:
+- crdVersion: v1
+  group: node-labels
+  kind: Labels
+  version: v1beta1
+version: 3-alpha
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
