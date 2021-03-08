@@ -1,0 +1,4 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: worker-0-dummy-1
