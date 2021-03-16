@@ -17,8 +17,7 @@ func IsOwnedLabel(nodeLabelDomainName string, ownedLabel v1beta1.OwnedLabels, lo
 	// split domainName
 	parts := strings.Split(nodeLabelDomainName, "/")
 	if len(parts) != 2 {
-		// this should not happen...
-		log.Info("Skipping unexpected label", "labelDomainName", nodeLabelDomainName)
+		log.Info("Skipping label with unexpected name, not in format domain/labelname", "labelDomainName", nodeLabelDomainName)
 		return false
 	}
 	labelDomain := parts[0]
