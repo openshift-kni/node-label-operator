@@ -19,6 +19,7 @@ package main
 import (
 	"flag"
 	"os"
+	"path/filepath"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -30,7 +31,9 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 
+	"github.com/openshift-kni/node-label-operator/api"
 	nodelabelsv1beta1 "github.com/openshift-kni/node-label-operator/api/v1beta1"
 	"github.com/openshift-kni/node-label-operator/controllers"
 	// +kubebuilder:scaffold:imports
@@ -96,6 +99,12 @@ func main() {
 	}
 	// +kubebuilder:scaffold:builder
 
+	// setup webhooks for not owned resources
+	if err := setupExternalResourcesWebhooks(mgr); err != nil {
+		setupLog.Error(err, "unable to setup external webhooks")
+		os.Exit(1)
+	}
+
 	if err := mgr.AddHealthzCheck("health", healthz.Ping); err != nil {
 		setupLog.Error(err, "unable to set up health check")
 		os.Exit(1)
@@ -110,4 +119,33 @@ func main() {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
 	}
+}
+
+const (
+	WebhookCertDir  = "/apiserver.local.config/certificates"
+	WebhookCertName = "apiserver.crt"
+	WebhookKeyName  = "apiserver.key"
+)
+
+func setupExternalResourcesWebhooks(mgr manager.Manager) error {
+
+	// Make sure the certificates are mounted, this should be handled by the OLM
+	certs := []string{filepath.Join(WebhookCertDir, WebhookCertName), filepath.Join(WebhookCertDir, WebhookKeyName)}
+	for _, fname := range certs {
+		if _, err := os.Stat(fname); err != nil {
+			setupLog.Error(err, "Failed to prepare webhook server, certificates not found")
+			return err
+		}
+	}
+
+	server := mgr.GetWebhookServer()
+	server.CertDir = WebhookCertDir
+	server.CertName = WebhookCertName
+	server.KeyName = WebhookKeyName
+
+	// setup node webhook
+	(&api.NodeLabeler{}).SetupWebhookWithManager(mgr)
+
+	return nil
+
 }

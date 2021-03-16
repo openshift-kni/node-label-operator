@@ -3,5 +3,4 @@ kind: OwnedLabels
 metadata:
   name: ownedlabels-sample
 spec:
-  # Add fields here
-  foo: bar
+  domain: test.openshift.io
