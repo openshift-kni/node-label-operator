@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This is a PoC for an operator with the main purpose of adding labels to
+This is a an operator with the main purpose of adding labels to
 Nodes based on their names, immediately when Nodes are created. This is done
 by using a mutating admission webhook.
 
@@ -49,7 +49,7 @@ type Rule struct {
 ```
 
 Creating instances of his CRD defines which labels should be added to which
-nodes.
+nodes. A node can match with multiple CRs to accumulate multiple sets of labels.
 
 ### The OwnedLabels CRD
 
