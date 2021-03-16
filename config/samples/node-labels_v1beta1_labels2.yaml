@@ -3,8 +3,7 @@ kind: Labels
 metadata:
   name: labels-sample2
 spec:
-  rules:
-    - nodeNamePatterns:
-        - worker-0
-      labels:
-        - test.openshift.io/fooOther=barOther
+  nodeNamePatterns:
+    - worker-0
+  labels:
+    test.openshift.io/fooOther: barOther

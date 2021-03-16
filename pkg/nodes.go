@@ -3,7 +3,6 @@ package pkg
 import (
 	"fmt"
 	"regexp"
-	"strings"
 
 	"github.com/go-logr/logr"
 
@@ -50,35 +49,27 @@ func AddLabels(node *v1.Node, labels v1beta1.Labels, log logr.Logger) bool {
 	if !labels.GetDeletionTimestamp().IsZero() {
 		return false
 	}
-	log.Info("Checking if labels need to be added to node", "node", node.Name, "label config", fmt.Sprintf("%+v", labels.Spec.Rules))
+	log.Info("Checking if labels need to be added to node", "node", node.Name, "label config", fmt.Sprintf("%+v", labels.Spec))
 	nodeModified := false
-	for _, rule := range labels.Spec.Rules {
-		for _, nodeNamePattern := range rule.NodeNamePatterns {
-			pattern := fmt.Sprintf("%s%s%s", "^", nodeNamePattern, "$")
-			match, err := regexp.MatchString(pattern, node.Name)
-			if err != nil {
-				log.Error(err, "Invalid regular expression, moving on to next rule")
-				continue
-			}
-			if !match {
-				continue
-			}
-			// we have a match, add labels!
-			for _, label := range rule.Labels {
-				// split to domain/name and value
-				parts := strings.Split(label, "=")
-				if len(parts) != 2 {
-					log.Info("Invalid label, less or more than one \"=\", moving on to next rule", "label", label)
-					continue
+	for _, nodeNamePattern := range labels.Spec.NodeNamePatterns {
+		pattern := fmt.Sprintf("%s%s%s", "^", nodeNamePattern, "$")
+		match, err := regexp.MatchString(pattern, node.Name)
+		if err != nil {
+			log.Error(err, "Invalid regular expression, moving on to next rule")
+			continue
+		}
+		if !match {
+			continue
+		}
+		// we have a match, add labels!
+		for name, value := range labels.Spec.Labels {
+			if val, ok := node.Labels[name]; !ok || val != value {
+				log.Info("Adding label to node based on pattern", "labelName", name, "labelValue", value, "pattern", nodeNamePattern)
+				if node.Labels == nil {
+					node.Labels = map[string]string{}
 				}
-				if val, ok := node.Labels[parts[0]]; !ok || val != parts[1] {
-					log.Info("Adding label to node based on pattern", "label", label, "pattern", nodeNamePattern)
-					if node.Labels == nil {
-						node.Labels = map[string]string{}
-					}
-					node.Labels[parts[0]] = parts[1]
-					nodeModified = true
-				}
+				node.Labels[name] = value
+				nodeModified = true
 			}
 		}
 	}

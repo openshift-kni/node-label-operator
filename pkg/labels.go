@@ -3,7 +3,6 @@ package pkg
 import (
 	"fmt"
 	"regexp"
-	"strings"
 
 	"github.com/go-logr/logr"
 
@@ -27,29 +26,21 @@ func IsCovered(nodeName string, labelDomainName string, labels v1beta1.Labels, l
 		return false
 	}
 
-	log.Info("Checking if label is covered", "node", nodeName, "label to check", labelDomainName, "label config", fmt.Sprintf("%+v", labels.Spec.Rules))
-	for _, rule := range labels.Spec.Rules {
-		for _, ruleLabel := range rule.Labels {
-			// split to domain/name and value
-			parts := strings.Split(ruleLabel, "=")
-			if len(parts) != 2 {
-				log.Info("Skipping unexpected rule label", ruleLabel)
-				continue
-			}
-			if parts[0] == labelDomainName {
-				log.Info("Label name matches")
-				// label matches... does the node?
-				for _, nodeNamePattern := range rule.NodeNamePatterns {
-					match, err := regexp.MatchString(nodeNamePattern, nodeName)
-					if err != nil {
-						log.Error(err, "Invalid regular expression, moving on to next rule")
-						continue
-					}
-					if match {
-						// label is covered
-						log.Info("Label value matches")
-						return true
-					}
+	log.Info("Checking if label is covered", "node", nodeName, "label to check", labelDomainName, "label config", fmt.Sprintf("%+v", labels.Spec))
+	for name := range labels.Spec.Labels {
+		if name == labelDomainName {
+			log.Info("Label name matches")
+			// label matches... does the node?
+			for _, nodeNamePattern := range labels.Spec.NodeNamePatterns {
+				match, err := regexp.MatchString(nodeNamePattern, nodeName)
+				if err != nil {
+					log.Error(err, "Invalid regular expression, moving on to next rule")
+					continue
+				}
+				if match {
+					// label is covered
+					log.Info("Label value matches")
+					return true
 				}
 			}
 		}

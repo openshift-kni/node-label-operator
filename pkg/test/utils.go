@@ -26,9 +26,12 @@ const (
 	LabelValueNew      = "bar2"
 	LabelDomainName    = LabelDomain + "/" + LabelName
 	LabelDomainNameNew = LabelDomain + "/" + LabelNameNew
-	Label              = LabelDomainName + "=" + LabelValue
-	LabelNewValue      = LabelDomainName + "=" + LabelValueNew
-	LabelNewName       = LabelDomainNameNew + "=" + LabelValue
+)
+
+var (
+	Label         = map[string]string{LabelDomainName: LabelValue}
+	LabelNewValue = map[string]string{LabelDomainName: LabelValueNew}
+	LabelNewName  = map[string]string{LabelDomainNameNew: LabelValue}
 )
 
 var ctx = context.Background()
@@ -56,12 +59,8 @@ func GetLabels() *v1beta1.Labels {
 			Namespace:    "default",
 		},
 		Spec: v1beta1.LabelsSpec{
-			Rules: []v1beta1.Rule{
-				{
-					NodeNamePatterns: []string{NodeNamePattern},
-					Labels:           []string{Label},
-				},
-			},
+			NodeNamePatterns: []string{NodeNamePattern},
+			Labels:           Label,
 		},
 	}
 }
