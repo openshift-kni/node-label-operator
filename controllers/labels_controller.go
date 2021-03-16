@@ -32,7 +32,7 @@ import (
 	"github.com/openshift-kni/node-label-operator/pkg"
 )
 
-const labelsFinalizer = "node-labels.openshift.io/finalizer"
+const labelsFinalizer = "node-label-operator.openshift.io/finalizer"
 
 // LabelsReconciler reconciles a Labels object
 type LabelsReconciler struct {
