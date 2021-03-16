@@ -28,9 +28,7 @@ func RemoveOwnedLabels(node *v1.Node, allOwnedLabels []v1beta1.OwnedLabels, allL
 			if !IsCoveredByAll(node.Name, labelDomainName, allLabels, log) {
 				// we need to remove the label
 				log.Info("Deleting uncovered owned label")
-				nodeLabels := node.Labels
-				delete(nodeLabels, labelDomainName)
-				node.Labels = nodeLabels
+				delete(node.Labels, labelDomainName)
 				nodeModified = true
 			}
 		}
