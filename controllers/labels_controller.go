@@ -144,6 +144,7 @@ func (r *LabelsReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 		controllerutil.RemoveFinalizer(labels, labelsFinalizer)
 		err := r.Update(ctx, labels)
 		if err != nil {
+			log.Error(err, "Failed to remove finalizer")
 			return ctrl.Result{}, err
 		}
 	}
