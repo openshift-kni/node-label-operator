@@ -19,7 +19,7 @@ const (
 	NodeNameMatching = "node-match-yes"
 	NodeNameNoMatch  = "node-no-match"
 
-	LabelDomain        = "test.opneshift.io"
+	LabelDomain        = "test.openshift.io"
 	LabelName          = "foo1"
 	LabelValue         = "bar1"
 	LabelNameNew       = "foo2"
