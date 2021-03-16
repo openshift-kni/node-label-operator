@@ -75,7 +75,7 @@ func (r *LabelsReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 		return ctrl.Result{}, err
 	}
 
-	markedForDeletion := labels.GetDeletionTimestamp() != nil
+	markedForDeletion := !labels.GetDeletionTimestamp().IsZero()
 
 	// add finalizer
 	if !markedForDeletion && !controllerutil.ContainsFinalizer(labels, labelsFinalizer) {

@@ -23,7 +23,7 @@ func IsCoveredByAll(nodeName string, labelDomainName string, allLabels []v1beta1
 // IsCoveredByAll checks if the given labelDomainName is covered by the rules of the given labels for the given nodeName
 func IsCovered(nodeName string, labelDomainName string, labels v1beta1.Labels, log logr.Logger) bool {
 
-	if labels.GetDeletionTimestamp() != nil {
+	if !labels.GetDeletionTimestamp().IsZero() {
 		return false
 	}
 

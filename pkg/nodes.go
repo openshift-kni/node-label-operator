@@ -49,7 +49,7 @@ func AddAllLabels(node *v1.Node, allLabels []v1beta1.Labels, log logr.Logger) bo
 
 // AddLabels adds the labels configured in the rules of the given Labels to the given node
 func AddLabels(node *v1.Node, labels v1beta1.Labels, log logr.Logger) bool {
-	if labels.GetDeletionTimestamp() != nil {
+	if !labels.GetDeletionTimestamp().IsZero() {
 		return false
 	}
 	log.Info("Checking if labels need to be added to node", "node", node.Name, "label config", fmt.Sprintf("%+v", labels.Spec.Rules))
