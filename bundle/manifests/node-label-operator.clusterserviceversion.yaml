@@ -11,25 +11,34 @@ metadata:
             "name": "labels-sample"
           },
           "spec": {
-            "foo": "bar"
+            "labels": {
+              "example.openshift.io/foo3": "bar3",
+              "test.openshift.io/foo1": "bar1",
+              "test.openshift.io/foo2": "bar2"
+            },
+            "nodeNamePatterns": [
+              "worker-0.*"
+            ]
           }
         }
       ]
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.4.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: node-label-operator-kni.v0.1.0
+  name: node-label-operator.v0.1.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
-    - description: Labels is the Schema for the labels API
+    - description: Labels is the Schema for the labels API. Labels define which labels should be added to which nodes.
       displayName: Labels
       kind: Labels
       name: labels.node-labels.openshift.io
       version: v1beta1
-    - kind: OwnedLabels
+    - description: OwnedLabels is the Schema for the ownedlabels API. They define which node labels are owned by this operator and can safely be removed in case no label rule matches anymore.
+      displayName: Owned Labels
+      kind: OwnedLabels
       name: ownedlabels.node-labels.openshift.io
       version: v1beta1
   description: Operator for labeling nodes based on their names
@@ -117,7 +126,7 @@ spec:
           - create
         serviceAccountName: default
       deployments:
-      - name: node-label-operator-kni-controller-manager
+      - name: node-label-operator-controller-manager
         spec:
           replicas: 1
           selector:
@@ -203,7 +212,7 @@ spec:
         serviceAccountName: default
     strategy: deployment
   installModes:
-  - supported: false
+  - supported: true
     type: OwnNamespace
   - supported: false
     type: SingleNamespace
@@ -215,11 +224,11 @@ spec:
   - node
   - labels
   links:
-  - name: Node Label Operator Kni
-    url: https://node-label-operator-kni.domain
+  - name: Node Label Operator
+    url: https://github.com/openshift-kni/node-label-operator
   maintainers:
-  - email: kni-lifecycle-team@redhat.com'
-    name: '''KNI Lifecycle Team'
+  - email: kni-lifecycle-team@redhat.com
+    name: KNI Lifecycle Team
   maturity: alpha
   provider:
     name: Red Hat
@@ -230,7 +239,7 @@ spec:
     - v1
     - v1beta1
     containerPort: 443
-    deploymentName: node-label-operator-kni-controller-manager
+    deploymentName: node-label-operator-controller-manager
     failurePolicy: Ignore
     generateName: mnode.kb.io
     rules:

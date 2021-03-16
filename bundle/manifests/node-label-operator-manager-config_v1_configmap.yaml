@@ -14,4 +14,4 @@ data:
       resourceName: bc56d2fa.openshift.io
 kind: ConfigMap
 metadata:
-  name: node-label-operator-kni-manager-config
+  name: node-label-operator-manager-config

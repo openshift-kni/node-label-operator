@@ -19,9 +19,9 @@ spec:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: OwnedLabels is the Schema for the ownedlabels API They define
-          which node labels are owned by this operator and can be removed in case
-          no label rule matches
+        description: OwnedLabels is the Schema for the ownedlabels API. They define
+          which node labels are owned by this operator and can safely be removed in
+          case no label rule matches anymore.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation

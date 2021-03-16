@@ -40,7 +40,7 @@ type LabelsStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// Labels is the Schema for the labels API
+// Labels is the Schema for the labels API. Labels define which labels should be added to which nodes.
 type Labels struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

@@ -4,7 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     control-plane: controller-manager
-  name: node-label-operator-kni-controller-manager-metrics-service
+  name: node-label-operator-controller-manager-metrics-service
 spec:
   ports:
   - name: https

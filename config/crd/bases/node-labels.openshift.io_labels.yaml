@@ -19,7 +19,8 @@ spec:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: Labels is the Schema for the labels API
+        description: Labels is the Schema for the labels API. Labels define which
+          labels should be added to which nodes.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
