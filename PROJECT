@@ -1,13 +1,16 @@
 domain: openshift.io
 layout: go.kubebuilder.io/v3
-projectName: node-label-operator-kni
+projectName: node-label-operator
 repo: github.com/openshift-kni/node-label-operator
 resources:
 - crdVersion: v1
   group: node-labels
   kind: Labels
   version: v1beta1
-  webhookVersion: v1
+- crdVersion: v1
+  group: node-labels
+  kind: OwnedLabels
+  version: v1beta1
 version: 3-alpha
 plugins:
   manifests.sdk.operatorframework.io/v2: {}

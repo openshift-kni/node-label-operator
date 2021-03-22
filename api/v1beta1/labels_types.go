@@ -24,18 +24,13 @@ import (
 
 // LabelsSpec defines the desired state of Labels
 type LabelsSpec struct {
-	// Rules defines a list of rules
-	Rules []Rule `json:"rules"`
-}
-
-type Rule struct {
-	// NodeNames defines a list of node name patterns for which the given labels should be set.
+	// NodeNamePatterns defines a list of node name regex patterns for which the given labels should be set.
 	// String start and end anchors (^/$) will be added automatically
 	NodeNamePatterns []string `json:"nodeNamePatterns"`
 
 	// Label defines the labels which should be set if one of the node name patterns matches
 	// Format of label must be domain/name=value
-	Labels []string `json:"labels"`
+	Labels map[string]string `json:"labels"`
 }
 
 // LabelsStatus defines the observed state of Labels
@@ -45,7 +40,7 @@ type LabelsStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// Labels is the Schema for the labels API
+// Labels is the Schema for the labels API. Labels define which labels should be added to which nodes.
 type Labels struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

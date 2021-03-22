@@ -3,10 +3,9 @@ kind: Labels
 metadata:
   name: labels-sample
 spec:
-  rules:
-    - nodeNamePatterns:
-        - worker-0.*
-      labels:
-        - test.openshift.io/foo1=bar1
-        - test.openshift.io/foo2=bar2
-        - example.openshift.io/foo3=bar3
+  nodeNamePatterns:
+    - worker-0.*
+  labels:
+    test.openshift.io/foo1: bar1
+    test.openshift.io/foo2: bar2
+    example.openshift.io/foo3: bar3

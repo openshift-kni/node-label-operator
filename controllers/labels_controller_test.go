@@ -80,7 +80,7 @@ var _ = Describe("Labels controller", func() {
 
 				By("get latest labels version")
 				labelsOrig := labels.DeepCopy()
-				labels.Spec.Rules[0].Labels[0] = LabelNewValue
+				labels.Spec.Labels = LabelNewValue
 				Expect(k8sClient.Patch(context.Background(), labels, client.MergeFrom(labelsOrig))).Should(Succeed())
 
 				By("Verifying that label with updated value exists")
@@ -113,7 +113,7 @@ var _ = Describe("Labels controller", func() {
 
 				By("Patching label name")
 				labelsOrig := labels.DeepCopy()
-				labels.Spec.Rules[0].Labels[0] = LabelNewName
+				labels.Spec.Labels = LabelNewName
 				Expect(k8sClient.Patch(context.Background(), labels, client.MergeFrom(labelsOrig))).Should(Succeed())
 
 				By("Verifying that old label exists")
@@ -165,7 +165,7 @@ var _ = Describe("Labels controller", func() {
 
 				By("Patching label name")
 				labelsOrig := labels.DeepCopy()
-				labels.Spec.Rules[0].Labels[0] = LabelNewName
+				labels.Spec.Labels = LabelNewName
 				Expect(k8sClient.Patch(context.Background(), labels, client.MergeFrom(labelsOrig))).Should(Succeed())
 
 				By("Verifying that new label exists")

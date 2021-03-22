@@ -49,8 +49,8 @@ type OwnedLabelsStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// OwnedLabels is the Schema for the ownedlabels API
-// They define which node labels are owned by this operator and can be removed in case no label rule matches
+// OwnedLabels is the Schema for the ownedlabels API. They define which node labels are owned by this operator
+// and can safely be removed in case no label rule matches anymore.
 type OwnedLabels struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

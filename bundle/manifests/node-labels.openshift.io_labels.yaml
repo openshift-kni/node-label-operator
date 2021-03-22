@@ -17,7 +17,7 @@ spec:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: Labels is the Schema for the labels API
+        description: Labels is the Schema for the labels API. Labels define which labels should be added to which nodes.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
@@ -30,27 +30,19 @@ spec:
           spec:
             description: LabelsSpec defines the desired state of Labels
             properties:
-              rules:
-                description: Rules defines a list of rules
+              labels:
+                additionalProperties:
+                  type: string
+                description: Label defines the labels which should be set if one of the node name patterns matches Format of label must be domain/name=value
+                type: object
+              nodeNamePatterns:
+                description: NodeNamePatterns defines a list of node name regex patterns for which the given labels should be set. String start and end anchors (^/$) will be added automatically
                 items:
-                  properties:
-                    labels:
-                      description: Label defines the labels which should be set if one of the node name patterns matches Format of label must be domain/name=value
-                      items:
-                        type: string
-                      type: array
-                    nodeNamePatterns:
-                      description: NodeNames defines a list of node name patterns for which the given labels should be set. String start and end anchors (^/$) will be added automatically
-                      items:
-                        type: string
-                      type: array
-                  required:
-                  - labels
-                  - nodeNamePatterns
-                  type: object
+                  type: string
                 type: array
             required:
-            - rules
+            - labels
+            - nodeNamePatterns
             type: object
           status:
             description: LabelsStatus defines the observed state of Labels

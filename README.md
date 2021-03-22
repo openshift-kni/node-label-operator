@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This is a an operator with the main purpose of adding labels to
+This is an operator with the main purpose of adding labels to
 Nodes based on their names, immediately when Nodes are created. This is done
 by using a mutating admission webhook.
 
@@ -33,17 +33,11 @@ of labels:
 ```go
 // LabelsSpec defines the desired state of Labels
 type LabelsSpec struct {
-	// Rules defines a list of rules
-	Rules []Rule `json:"rules"`
-}
-
-type Rule struct {
-	// NodeNames defines a list of node name patterns for which the given labels should be set. 
-	//String start and end anchors (^/$) will be added automatically 
-	NodeNamePatterns []string `json:"nodeNamePatterns"`
-
-	// Label defines the labels which should be set if one of the node name patterns matches
-	// Format of label must be domain/name=value
+	// NodeNamePatterns defines a list of node name regex patterns for which the given labels should be set.
+	// String start and end anchors (^/$) will be added automatically 
+	NodeNamePatterns []string `json:"nodeNamePatterns"` 
+	// Label defines the labels which should be set if one of the node name patterns matches 
+	//Format of label must be domain/name=value 
 	Labels []string `json:"labels"`
 }
 ```
@@ -93,9 +87,9 @@ spec:
     - nodeNamePatterns:
         - worker-0
       labels:
-        - test.openshift.io/foo1=bar1
-        - example.openshift.io/foo2=bar2
-        - test.openshift.io/foo3=bar3
+        test.openshift.io/foo1: bar1
+        example.openshift.io/foo2: bar2
+        test.openshift.io/foo3: bar3
 ```
 ```yaml
 apiVersion: node-labels.openshift.io/v1beta1
@@ -107,7 +101,7 @@ spec:
     - nodeNamePatterns:
         - worker-0.*
       labels:
-        - test.openshift.io/fooOther=barOther
+        test.openshift.io/fooOther: barOther
 ```
 ```yaml
 apiVersion: node-labels.openshift.io/v1beta1
@@ -119,7 +113,7 @@ spec:
     - nodeNamePatterns:
         - dummy
       labels:
-        - test.openshift.io/fooDummy=barDummy
+        test.openshift.io/fooDummy: barDummy
 ```
 
 ```yaml
@@ -146,7 +140,7 @@ spec:
 
 ## License
 
-Copyright 2021 Marc Sluiter
+Copyright 2021 Red Hat
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
