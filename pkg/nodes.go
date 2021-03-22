@@ -61,13 +61,14 @@ func AddLabels(node *v1.Node, labels v1beta1.Labels, log logr.Logger) bool {
 		if !match {
 			continue
 		}
+		// init labels
+		if node.Labels == nil {
+			node.Labels = map[string]string{}
+		}
 		// we have a match, add labels!
 		for name, value := range labels.Spec.Labels {
 			if val, ok := node.Labels[name]; !ok || val != value {
-				log.Info("Adding label to node based on pattern", "labelName", name, "labelValue", value, "pattern", nodeNamePattern)
-				if node.Labels == nil {
-					node.Labels = map[string]string{}
-				}
+				log.Info("Adding label to node based on pattern", "node", node.Name, "pattern", nodeNamePattern, "labelName", name, "labelValue", value)
 				node.Labels[name] = value
 				nodeModified = true
 			}
