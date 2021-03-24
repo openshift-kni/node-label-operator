@@ -24,14 +24,16 @@ BUNDLE_DEFAULT_CHANNEL := --default-channel=$(DEFAULT_CHANNEL)
 endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
-IMAGE_TAG ?= $(VERSION)
+IMAGE_TAG ?= v$(VERSION)
+IMAGE_REGISTRY ?= quay.io/openshift-kni/
 
 # BUNDLE_IMG defines the image:tag used for the bundle. 
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
-BUNDLE_IMG ?= quay.io/openshift-kni/node-label-operator-bundle:$(IMAGE_TAG)
+BUNDLE_IMG ?= $(IMAGE_REGISTRY)node-label-operator-bundle:$(IMAGE_TAG)
 
 # Image URL to use all building/pushing image targets
-IMG ?= quay.io/openshift-kni/node-label-operator:$(IMAGE_TAG)
+IMAGE_NAME ?= node-label-operator
+IMG ?= $(IMAGE_REGISTRY)$(IMAGE_NAME):$(IMAGE_TAG)
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
 
