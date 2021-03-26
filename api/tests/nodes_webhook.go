@@ -1,4 +1,4 @@
-package api
+package tests
 
 import (
 	"context"
@@ -15,6 +15,9 @@ import (
 	. "github.com/openshift-kni/node-label-operator/pkg/test"
 )
 
+// Note: this file hasn't the _test.go postfix because it is reused by e2e tests,
+// and _test.go files are only compiled if their own package is under test.
+
 var _ = Describe("Nodes webhook", func() {
 
 	When("Creating a node", func() {
@@ -22,13 +25,17 @@ var _ = Describe("Nodes webhook", func() {
 		var nodeNotMatching *v1.Node
 		var nodeMatching *v1.Node
 		var labels *v1beta1.Labels
+		var k8sClient client.Client
 
 		BeforeEach(func() {
+
+			k8sClient = *K8sClient // from test package
+
 			// Order matters!
 			// And it is important Labels exists for sure before nodes are created
 			By("Creating a Labels CR")
 			labels = GetLabels()
-			Expect(k8sClient.Create(ctx, labels)).Should(Succeed(), "labels should have been created")
+			Expect(k8sClient.Create(context.Background(), labels)).Should(Succeed(), "labels should have been created")
 			Eventually(func() error {
 				return k8sClient.Get(context.Background(), client.ObjectKeyFromObject(labels), labels)
 			}, Timeout, Interval).Should(Succeed(), "labels should exist")
