@@ -1,4 +1,4 @@
-package controllers
+package tests
 
 import (
 	"context"
@@ -15,13 +15,20 @@ import (
 	. "github.com/openshift-kni/node-label-operator/pkg/test"
 )
 
+// Note: this file hasn't the _test.go postfix because it is reused by e2e tests,
+// and _test.go files are only compiled if their own package is under test.
+
 var _ = Describe("OwnedLabels controller", func() {
 
 	var nodeMatching *v1.Node
 	var labels *v1beta1.Labels
 	var labelsDeletedByTest bool
+	var k8sClient client.Client
 
 	BeforeEach(func() {
+
+		k8sClient = *K8sClient // from test package
+
 		labelsDeletedByTest = false
 
 		By("Creating nodes")

@@ -40,7 +40,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	"github.com/openshift-kni/node-label-operator/api/v1beta1"
-	// +kubebuilder:scaffold:imports
+	"github.com/openshift-kni/node-label-operator/pkg/test"
+
+	// import actual tests
+	// they are in their own package without _test.go prefix
+	// - in order to be reusable by e2e tests
+	// - not influence coverage of this package
+	_ "github.com/openshift-kni/node-label-operator/api/tests"
 )
 
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
@@ -128,6 +134,8 @@ var _ = BeforeSuite(func() {
 		conn.Close()
 		return nil
 	}).Should(Succeed())
+
+	test.K8sClient = &k8sClient
 
 }, 60)
 

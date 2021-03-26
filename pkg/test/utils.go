@@ -1,12 +1,12 @@
 package test
 
 import (
-	"context"
 	"time"
 
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/utils/pointer"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/openshift-kni/node-label-operator/api/v1beta1"
 )
@@ -32,9 +32,9 @@ var (
 	Label         = map[string]string{LabelDomainName: LabelValue}
 	LabelNewValue = map[string]string{LabelDomainName: LabelValueNew}
 	LabelNewName  = map[string]string{LabelDomainNameNew: LabelValue}
-)
 
-var ctx = context.Background()
+	K8sClient *client.Client
+)
 
 func GetNode(name string) *v1.Node {
 	return &v1.Node{
