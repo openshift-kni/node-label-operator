@@ -63,7 +63,7 @@ e2e-test:
 
 # Build manager binary
 manager: generate fmt vet
-	go build -o bin/manager main.go
+	hack/build.sh
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
 run: generate fmt vet manifests
