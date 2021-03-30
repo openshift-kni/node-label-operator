@@ -33,24 +33,39 @@ var _ = Describe("Nodes webhook", func() {
 
 			// Order matters!
 			// And it is important Labels exists for sure before nodes are created
+
+			// always use dummy nodes, also in a real cluster, they live long enough for doing the test
+			nodeNotMatching = GetNode("dummy-one")
+			nodeMatching = GetNode("dummy-two")
+
 			By("Creating a Labels CR")
-			labels = GetLabels()
+			pattern := GetPattern(nodeMatching.Name, nodeNotMatching.Name)
+			labels = GetLabels(pattern)
 			Expect(k8sClient.Create(context.Background(), labels)).Should(Succeed(), "labels should have been created")
 			Eventually(func() error {
 				return k8sClient.Get(context.Background(), client.ObjectKeyFromObject(labels), labels)
 			}, Timeout, Interval).Should(Succeed(), "labels should exist")
 
 			By("Creating nodes")
-			nodeNotMatching = GetNode(NodeNameNoMatch)
 			Expect(k8sClient.Create(context.Background(), nodeNotMatching)).Should(Succeed(), "nodeNotMatching should have been created")
-			nodeMatching = GetNode(NodeNameMatching)
 			Expect(k8sClient.Create(context.Background(), nodeMatching)).Should(Succeed(), "nodeMatching should have been created")
+
 		})
 
 		AfterEach(func() {
 			By("Cleaning up nodes and labels")
 			Expect(k8sClient.Delete(context.Background(), nodeNotMatching)).Should(Succeed(), "nodeNotMatching should have been deleted")
 			Expect(k8sClient.Delete(context.Background(), nodeMatching)).Should(Succeed(), "nodeMatching should have been deleted")
+
+			//Ensure both nodes are deleted
+			Eventually(func() bool {
+				err := k8sClient.Get(context.Background(), client.ObjectKeyFromObject(nodeNotMatching), nodeMatching)
+				if !errors.IsNotFound(err) {
+					return false
+				}
+				err = k8sClient.Get(context.Background(), client.ObjectKeyFromObject(nodeMatching), nodeMatching)
+				return errors.IsNotFound(err)
+			}, Timeout, Interval).Should(BeTrue(), "dummy nodes not deleted in time")
 
 			Expect(k8sClient.Delete(context.Background(), labels)).Should(Succeed(), "labels should have been deleted")
 			Eventually(func() bool {
