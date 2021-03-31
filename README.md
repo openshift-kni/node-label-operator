@@ -83,13 +83,12 @@ kind: Labels
 metadata:
   name: labels-sample1
 spec:
-  rules:
-    - nodeNamePatterns:
-        - worker-0
-      labels:
-        test.openshift.io/foo1: bar1
-        example.openshift.io/foo2: bar2
-        test.openshift.io/foo3: bar3
+  nodeNamePatterns:
+    - worker-0
+  labels:
+    test.openshift.io/foo1: bar1
+    example.openshift.io/foo2: bar2
+    test.openshift.io/foo3: bar3
 ```
 ```yaml
 apiVersion: node-labels.openshift.io/v1beta1
@@ -97,11 +96,10 @@ kind: Labels
 metadata:
   name: labels-sample2
 spec:
-  rules:
-    - nodeNamePatterns:
-        - worker-0.*
-      labels:
-        test.openshift.io/fooOther: barOther
+  nodeNamePatterns:
+    - worker-0.*
+  labels:
+    test.openshift.io/fooOther: barOther
 ```
 ```yaml
 apiVersion: node-labels.openshift.io/v1beta1
@@ -109,11 +107,10 @@ kind: Labels
 metadata:
   name: labels-sample3
 spec:
-  rules:
-    - nodeNamePatterns:
-        - dummy
-      labels:
-        test.openshift.io/fooDummy: barDummy
+  nodeNamePatterns:
+    - dummy
+  labels:
+    test.openshift.io/fooDummy: barDummy
 ```
 
 ```yaml
