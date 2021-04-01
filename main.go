@@ -18,14 +18,16 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
-	"k8s.io/apimachinery/pkg/runtime"
+	k8sruntime "k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -36,11 +38,12 @@ import (
 	"github.com/openshift-kni/node-label-operator/api"
 	nodelabelsv1beta1 "github.com/openshift-kni/node-label-operator/api/v1beta1"
 	"github.com/openshift-kni/node-label-operator/controllers"
+	"github.com/openshift-kni/node-label-operator/pkg"
 	// +kubebuilder:scaffold:imports
 )
 
 var (
-	scheme   = runtime.NewScheme()
+	scheme   = k8sruntime.NewScheme()
 	setupLog = ctrl.Log.WithName("setup")
 )
 
@@ -67,6 +70,8 @@ func main() {
 	flag.Parse()
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+
+	printVersion()
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
@@ -148,4 +153,12 @@ func setupExternalResourcesWebhooks(mgr manager.Manager) error {
 
 	return nil
 
+}
+
+func printVersion() {
+	setupLog.Info(fmt.Sprintf("Go Version: %s", runtime.Version()))
+	setupLog.Info(fmt.Sprintf("Go OS/Arch: %s/%s", runtime.GOOS, runtime.GOARCH))
+	setupLog.Info(fmt.Sprintf("Operator Version: %s", pkg.Version))
+	setupLog.Info(fmt.Sprintf("Git Commit: %s", pkg.GitCommit))
+	setupLog.Info(fmt.Sprintf("Build Date: %s", pkg.BuildDate))
 }
