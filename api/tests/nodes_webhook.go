@@ -34,9 +34,12 @@ var _ = Describe("Nodes webhook", func() {
 			// Order matters!
 			// And it is important Labels exists for sure before nodes are created
 
-			// always use dummy nodes, also in a real cluster, they live long enough for doing the test
-			nodeNotMatching = GetNode("dummy-one")
-			nodeMatching = GetNode("dummy-two")
+			// always use dummy nodes, also in a real cluster, and prevent deletion with a finalizer
+			nodeMatching = GetNode("dummy-one")
+			nodeMatching.Finalizers = []string{"test.openshift.io/do-not-delete-this"}
+
+			nodeNotMatching = GetNode("dummy-two")
+			nodeNotMatching.Finalizers = []string{"test.openshift.io/do-not-delete-this"}
 
 			By("Creating a Labels CR")
 			pattern := GetPattern(nodeMatching.Name, nodeNotMatching.Name)
@@ -47,23 +50,33 @@ var _ = Describe("Nodes webhook", func() {
 			}, Timeout, Interval).Should(Succeed(), "labels should exist")
 
 			By("Creating nodes")
-			Expect(k8sClient.Create(context.Background(), nodeNotMatching)).Should(Succeed(), "nodeNotMatching should have been created")
 			Expect(k8sClient.Create(context.Background(), nodeMatching)).Should(Succeed(), "nodeMatching should have been created")
+			Expect(k8sClient.Create(context.Background(), nodeNotMatching)).Should(Succeed(), "nodeNotMatching should have been created")
 
 		})
 
 		AfterEach(func() {
 			By("Cleaning up nodes and labels")
-			Expect(k8sClient.Delete(context.Background(), nodeNotMatching)).Should(Succeed(), "nodeNotMatching should have been deleted")
-			Expect(k8sClient.Delete(context.Background(), nodeMatching)).Should(Succeed(), "nodeMatching should have been deleted")
+
+			patchedNode := nodeMatching.DeepCopy()
+			patchedNode.Finalizers = []string{}
+			Expect(k8sClient.Patch(context.Background(), patchedNode, client.MergeFrom(nodeMatching))).Should(Succeed(), "failed removing finalizer")
+			// ignore errors, in e2e the node is deleted by the cluster. we check if it is really gone later on
+			_ = k8sClient.Delete(context.Background(), nodeMatching)
+
+			patchedNode = nodeNotMatching.DeepCopy()
+			patchedNode.Finalizers = []string{}
+			Expect(k8sClient.Patch(context.Background(), patchedNode, client.MergeFrom(nodeNotMatching))).Should(Succeed(), "failed removing finalizer")
+			// ignore errors, in e2e the node is deleted by the cluster. we check if it is really gone later on
+			_ = k8sClient.Delete(context.Background(), nodeNotMatching)
 
 			//Ensure both nodes are deleted
 			Eventually(func() bool {
-				err := k8sClient.Get(context.Background(), client.ObjectKeyFromObject(nodeNotMatching), nodeMatching)
+				err := k8sClient.Get(context.Background(), client.ObjectKeyFromObject(nodeMatching), nodeMatching)
 				if !errors.IsNotFound(err) {
 					return false
 				}
-				err = k8sClient.Get(context.Background(), client.ObjectKeyFromObject(nodeMatching), nodeMatching)
+				err = k8sClient.Get(context.Background(), client.ObjectKeyFromObject(nodeNotMatching), nodeNotMatching)
 				return errors.IsNotFound(err)
 			}, Timeout, Interval).Should(BeTrue(), "dummy nodes not deleted in time")
 
