@@ -53,6 +53,7 @@ var _ = BeforeSuite(func(done Done) {
 	Expect(k8sClient).ToNot(BeNil())
 
 	test.K8sClient = &k8sClient
+	test.IsE2etest = true
 
 	close(done)
 

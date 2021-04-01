@@ -28,21 +28,21 @@ var _ = Describe("OwnedLabels controller", func() {
 	BeforeEach(func() {
 
 		k8sClient = *K8sClient // from test package
-
 		labelsDeletedByTest = false
 
-		By("Creating nodes")
-		nodeMatching = GetNode(NodeNameMatching)
-		Expect(k8sClient.Create(context.Background(), nodeMatching)).Should(Succeed(), "nodeMatching should have been created")
+		nodes := FindWorkerNodes()
+		nodeMatching = nodes[0]
 
 		By("Creating a Labels CR")
-		labels = GetLabels()
+		nodeNamePattern := GetPattern(nodeMatching.Name, "")
+		labels = GetLabels(nodeNamePattern)
 		Expect(k8sClient.Create(context.Background(), labels)).Should(Succeed(), "labels should have been created")
 	})
 
 	AfterEach(func() {
 		By("Cleaning up nodes and labels")
-		Expect(k8sClient.Delete(context.Background(), nodeMatching)).Should(Succeed(), "nodeMatching should have been deleted")
+		CleanupDummyNodes()
+
 		if !labelsDeletedByTest {
 			Expect(k8sClient.Delete(context.Background(), labels)).Should(Succeed(), "labels should have been deleted")
 			By("Ensure Labels is deleted")
