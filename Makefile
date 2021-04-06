@@ -1,9 +1,9 @@
-# VERSION defines the project version for the bundle. 
+# OPERATOR_VERSION defines the project version for the bundle.
 # Update this value when you upgrade the version of your project.
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
-# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
-# - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
-VERSION ?= 0.1.0
+# - use the OPERATOR_VERSION as arg of the bundle target (e.g make bundle OPERATOR_VERSION=0.0.2)
+# - use environment variables to overwrite this value (e.g export OPERATOR_VERSION=0.0.2)
+OPERATOR_VERSION ?= 0.1.0
 
 export OPERATOR_SDK_VERSION ?= v1.4.0
 
@@ -26,7 +26,7 @@ BUNDLE_DEFAULT_CHANNEL := --default-channel=$(DEFAULT_CHANNEL)
 endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
-IMAGE_TAG ?= v$(VERSION)
+IMAGE_TAG ?= v$(OPERATOR_VERSION)
 IMAGE_REGISTRY ?= quay.io/openshift-kni/
 
 # BUNDLE_IMG defines the image:tag used for the bundle. 
@@ -127,7 +127,7 @@ operator-sdk:
 bundle: operator-sdk manifests
 	./bin/operator-sdk generate kustomize manifests -q
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
-	$(KUSTOMIZE) build config/manifests | ./bin/operator-sdk generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
+	$(KUSTOMIZE) build config/manifests | ./bin/operator-sdk generate bundle -q --overwrite --version $(OPERATOR_VERSION) $(BUNDLE_METADATA_OPTS)
 	./bin/operator-sdk bundle validate ./bundle
 
 # Build the bundle image.
