@@ -98,6 +98,10 @@ fmt:
 vet:
 	go vet ./...
 
+.PHONY: lint
+lint: generate fmt vet manifests bundle
+	hack/verify-unchanged.sh
+
 # Generate code
 generate:
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
@@ -138,8 +142,7 @@ ci-test: test
 
 # Run linter tests on CI. Nothing special to do for now, but let's be prepared.
 .PHONY: ci-lint
-ci-lint:
-	@echo "not implemented yet"
+ci-lint: lint
 
 # Run e2e tests on CI. Nothing special to do for now, but let's be prepared.
 .PHONY: ci-e2e-test
