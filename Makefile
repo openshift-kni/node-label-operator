@@ -5,6 +5,8 @@
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
 VERSION ?= 0.1.0
 
+export OPERATOR_SDK_VERSION ?= v1.4.0
+
 # CHANNELS define the bundle channels used in the bundle. 
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "preview,fast,stable")
 # To re-generate a bundle for other specific channels without changing the standard setup, you can:
@@ -98,6 +100,7 @@ fmt:
 vet:
 	go vet ./...
 
+# Run lint tests
 .PHONY: lint
 lint: generate fmt vet manifests bundle
 	hack/verify-unchanged.sh
@@ -114,13 +117,18 @@ docker-build: test
 docker-push:
 	docker push ${IMG}
 
+# Download operator sdk if needed
+.PHONY: operator-sdk
+operator-sdk:
+	hack/operator-sdk.sh
+
 # Generate bundle manifests and metadata, then validate generated files.
 .PHONY: bundle
-bundle: manifests
-	operator-sdk generate kustomize manifests -q
+bundle: operator-sdk manifests
+	./bin/operator-sdk generate kustomize manifests -q
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
-	$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
-	operator-sdk bundle validate ./bundle
+	$(KUSTOMIZE) build config/manifests | ./bin/operator-sdk generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
+	./bin/operator-sdk bundle validate ./bundle
 
 # Build the bundle image.
 .PHONY: bundle-build
