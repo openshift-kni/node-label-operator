@@ -94,7 +94,9 @@ manifests:
 
 # Run go fmt against code
 fmt:
-	go fmt ./...
+	# goimports does more than fmt
+	# skip vendor!
+	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do go run golang.org/x/tools/cmd/goimports -w "$$file"; done
 
 # Run go vet against code
 vet:
