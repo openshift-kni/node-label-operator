@@ -23,6 +23,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
+    categories: OpenShift Optional
     operators.operatorframework.io/builder: operator-sdk-v1.4.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
   name: node-label-operator.v0.1.0
