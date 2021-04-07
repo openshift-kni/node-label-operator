@@ -3,7 +3,6 @@
 package e2e
 
 import (
-	"github.com/openshift-kni/node-label-operator/pkg/test"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
@@ -18,6 +17,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	"github.com/openshift-kni/node-label-operator/api/v1beta1"
+	"github.com/openshift-kni/node-label-operator/pkg/test"
 
 	// import for running their tests
 	_ "github.com/openshift-kni/node-label-operator/api/tests"

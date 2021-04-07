@@ -1,9 +1,11 @@
-# VERSION defines the project version for the bundle. 
+# OPERATOR_VERSION defines the project version for the bundle.
 # Update this value when you upgrade the version of your project.
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
-# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
-# - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
-VERSION ?= 0.1.0
+# - use the OPERATOR_VERSION as arg of the bundle target (e.g make bundle OPERATOR_VERSION=0.0.2)
+# - use environment variables to overwrite this value (e.g export OPERATOR_VERSION=0.0.2)
+OPERATOR_VERSION ?= 0.1.0
+
+export OPERATOR_SDK_VERSION ?= v1.4.0
 
 # CHANNELS define the bundle channels used in the bundle. 
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "preview,fast,stable")
@@ -24,7 +26,7 @@ BUNDLE_DEFAULT_CHANNEL := --default-channel=$(DEFAULT_CHANNEL)
 endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
-IMAGE_TAG ?= v$(VERSION)
+IMAGE_TAG ?= v$(OPERATOR_VERSION)
 IMAGE_REGISTRY ?= quay.io/openshift-kni/
 
 # BUNDLE_IMG defines the image:tag used for the bundle. 
@@ -92,11 +94,18 @@ manifests:
 
 # Run go fmt against code
 fmt:
-	go fmt ./...
+	# goimports does more than fmt
+	# skip vendor!
+	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do go run golang.org/x/tools/cmd/goimports -w "$$file"; done
 
 # Run go vet against code
 vet:
 	go vet ./...
+
+# Run lint tests
+.PHONY: lint
+lint: generate fmt vet manifests bundle
+	hack/verify-unchanged.sh
 
 # Generate code
 generate:
@@ -110,13 +119,18 @@ docker-build: test
 docker-push:
 	docker push ${IMG}
 
+# Download operator sdk if needed
+.PHONY: operator-sdk
+operator-sdk:
+	hack/operator-sdk.sh
+
 # Generate bundle manifests and metadata, then validate generated files.
 .PHONY: bundle
-bundle: manifests
-	operator-sdk generate kustomize manifests -q
+bundle: operator-sdk manifests
+	./bin/operator-sdk generate kustomize manifests -q
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
-	$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
-	operator-sdk bundle validate ./bundle
+	$(KUSTOMIZE) build config/manifests | ./bin/operator-sdk generate bundle -q --overwrite --version $(OPERATOR_VERSION) $(BUNDLE_METADATA_OPTS)
+	./bin/operator-sdk bundle validate ./bundle
 
 # Build the bundle image.
 .PHONY: bundle-build
@@ -138,8 +152,7 @@ ci-test: test
 
 # Run linter tests on CI. Nothing special to do for now, but let's be prepared.
 .PHONY: ci-lint
-ci-lint:
-	@echo "not implemented yet"
+ci-lint: lint
 
 # Run e2e tests on CI. Nothing special to do for now, but let's be prepared.
 .PHONY: ci-e2e-test

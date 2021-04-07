@@ -8,6 +8,7 @@ require (
 	github.com/onsi/gomega v1.10.2
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
 	golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1 // indirect
+	golang.org/x/tools v0.0.0-20200616195046-dc31b401abb5
 	k8s.io/api v0.19.2
 	k8s.io/apimachinery v0.19.2
 	k8s.io/client-go v11.0.0+incompatible

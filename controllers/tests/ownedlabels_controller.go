@@ -3,12 +3,12 @@ package tests
 import (
 	"context"
 	"fmt"
-	"k8s.io/apimachinery/pkg/api/errors"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/openshift-kni/node-label-operator/api/v1beta1"
