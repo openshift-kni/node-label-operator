@@ -1,5 +1,7 @@
 # Node Label Operator
 
+> *NOTE: this operator isn't maintained anymore!*
+
 ## Purpose
 
 This is an operator with the main purpose of adding labels to
